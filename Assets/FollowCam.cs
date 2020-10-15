@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class FollowCam : MonoBehaviour
 {
-    static public GameObject    POI;
+    static public GameObject POI;
+
+    [Header("Set in Inspector")]
+    public float easing = 0.05f;
 
     [Header("Set Dynamically")]
     public float camZ;
@@ -19,6 +22,7 @@ public class FollowCam : MonoBehaviour
         if (POI == null) return;
 
         Vector3 destination = POI.transform.position;
+        destination = Vector3.Lerp(transform.position, destination, easing);
         destination.z = camZ;
         transform.position = destination;
     }
