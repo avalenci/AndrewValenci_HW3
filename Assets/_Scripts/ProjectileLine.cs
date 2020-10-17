@@ -7,11 +7,11 @@ public class ProjectileLine : MonoBehaviour
     static public ProjectileLine S;
 
     [Header("Set in Inspector")]
-    public float minDist = 0.1f;
+    public float            minDist = 0.1f;
 
-    private LineRenderer line;
-    private GameObject _poi;
-    private List<Vector3> points;
+    private LineRenderer    line;
+    private GameObject      _poi;
+    private List<Vector3>   points;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class ProjectileLine : MonoBehaviour
     {
         get
         {
-            return (_poi);
+            return _poi;
         }
         set
         {
