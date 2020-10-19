@@ -18,6 +18,7 @@ public class MissionDemolition : MonoBehaviour
     public Text uitLevel;
     public Text uitShots;
     public Text uitButton;
+    public Text uitBest;
     public Vector3 castlePos;
     public GameObject[] castles;
 
@@ -25,9 +26,11 @@ public class MissionDemolition : MonoBehaviour
     public int level;
     public int levelMax;
     public int shotsTaken;
+    public int bestScore;
     public GameObject castle;
     public GameMode mode = GameMode.idle;
     public string showing = "Show Slingshot";
+    public Dictionary<int, int> castleDict = new Dictionary<int, int>();
 
     private void Start()
     {
@@ -35,6 +38,21 @@ public class MissionDemolition : MonoBehaviour
 
         level = 0;
         levelMax = castles.Length;
+
+        for (int i = 0; i < levelMax; i++)
+        {
+            castleDict.Add(i, 10);
+
+            if (PlayerPrefs.HasKey("BestScore" + i))
+            {
+                castleDict[i] = PlayerPrefs.GetInt("BestScore" + i);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("BestScore" + i, castleDict[i]);
+            }
+        }
+
         StartLevel();
     }
 
@@ -51,6 +69,7 @@ public class MissionDemolition : MonoBehaviour
         }
 
         castle = Instantiate<GameObject>(castles[level]);
+        bestScore = castleDict[level];
         castle.transform.position = castlePos;
         shotsTaken = 0;
 
@@ -68,6 +87,7 @@ public class MissionDemolition : MonoBehaviour
     {
         uitLevel.text = "Level: " + (level + 1) + "of " + levelMax;
         uitShots.text = "Shots Taken: " + shotsTaken;
+        uitBest.text = "Best: " + bestScore;
     }
 
     void Update()
@@ -85,6 +105,18 @@ public class MissionDemolition : MonoBehaviour
 
     void NextLevel()
     {
+        int bestTemp = castleDict[level];
+        if (shotsTaken < bestTemp && shotsTaken > 0)
+        {
+            castleDict[level] = shotsTaken;
+            bestTemp = shotsTaken;
+        }
+        int playerTemp = PlayerPrefs.GetInt("BestScore" + level);
+        if (bestTemp < playerTemp)
+        {
+            PlayerPrefs.SetInt("BestScore" + level, bestTemp);
+        }
+
         level++;
         if (level == levelMax)
         {
