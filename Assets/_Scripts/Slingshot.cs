@@ -9,10 +9,12 @@ public class Slingshot : MonoBehaviour
     [Header("Set in Inspector")]
 
     public GameObject   prefabProjectile;
+    public GameObject   line;
     public float        velocityMult = 8f;
 
     [Header("Set Dynamically")]
 
+    public LineRenderer lineRenderer;
     public GameObject   launchPoint;
     public Vector3      launchPos;
     public GameObject   projectile;
@@ -35,6 +37,10 @@ public class Slingshot : MonoBehaviour
         Transform launchPointTrans = transform.Find("LaunchPoint");
         launchPoint = launchPointTrans.gameObject;
         launchPoint.SetActive(false);
+
+        line = Instantiate<GameObject>(line);
+        lineRenderer = line.GetComponent<LineRenderer>();
+        lineRenderer.enabled = false;
 
         launchPos = launchPointTrans.position;
     }
@@ -82,8 +88,15 @@ public class Slingshot : MonoBehaviour
         Vector3 projPos = launchPos + mouseDelta;
         projectile.transform.position = projPos;
 
+        lineRenderer.positionCount = 3;
+        lineRenderer.SetPosition(0, GameObject.Find("FrontPeg").transform.position);
+        lineRenderer.SetPosition(1, projPos);
+        lineRenderer.SetPosition(2, GameObject.Find("BackPeg").transform.position);
+        lineRenderer.enabled = true;
+
         if (Input.GetMouseButtonUp(0))
         {
+            lineRenderer.enabled = false;
             aimingMode = false;
             projectileRigidbody.isKinematic = false;
             projectileRigidbody.velocity = -mouseDelta * velocityMult;
